@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Segmentation (K-Means) - E-Commerce DWDM{% endblock %}
+{% block page_title %}K-Means Customer Segmentation{% endblock %}
+{% block page_subtitle %}Machine Learning Clustering, StandardScaler, Elbow Method & Segment Profiling{% endblock %}
+
+{% block content %}
+<!-- Cluster Configuration Controls -->
+<div class="filter-bar">
+  <div class="d-flex align-items-center gap-2">
+    <i class="bi bi-sliders text-indigo-400"></i>
+    <span class="fw-bold fs-7">K-Means Configuration:</span>
+  </div>
+  <div class="d-flex align-items-center gap-3">
+    <label for="select-k-clusters" class="mb-0">Number of Clusters ($K$):</label>
+    <select id="select-k-clusters" class="form-select filter-control" style="width: 120px;">
+      <option value="2">K = 2</option>
+      <option value="3">K = 3</option>
+      <option value="4" selected>K = 4 (Recommended)</option>
+      <option value="5">K = 5</option>
+      <option value="6">K = 6</option>
+    </select>
+    <button id="btn-recluster" class="btn btn-sm btn-primary">
+      <i class="bi bi-cpu-fill me-1"></i> Re-Run K-Means
+    </button>
+  </div>
+</div>
+
+<!-- Charts Row: Elbow Method & Cluster Scatter Plot -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-5">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-graph-down text-warning me-2"></i> Elbow Method (Optimal K)</h3>
+        <span class="badge bg-amber-500/20 text-amber-300">WCSS Curve</span>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="chart-elbow-curve"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-diagram-3-fill text-indigo-400 me-2"></i> Customer Cluster Scatter Plot</h3>
+        <span class="badge bg-indigo-500/20 text-indigo-300">Recency vs Monetary</span>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="chart-clusters-scatter"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Segment Profiles Cards Section -->
+<div class="mb-3 d-flex align-items-center justify-content-between">
+  <h4 class="fw-bold m-0"><i class="bi bi-tags-fill text-emerald-400 me-2"></i> Identified Customer Segments</h4>
+  <span class="text-muted small">Assigned using dynamic RFM centroid characteristics</span>
+</div>
+
+<div class="row g-4 mb-4" id="segment-cards-container">
+  <!-- Dynamic cards inserted via JS -->
+</div>
+
+<!-- Customer Segment Detail Modal -->
+<div class="modal fade" id="modal-segment-customers" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content bg-slate-900 border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-header-title modal-title fw-bold" id="modal-segment-title">Segment Customer Explorer</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="custom-table" id="table-modal-customers">
+            <thead>
+              <tr>
+                <th>Customer ID</th>
+                <th>Name</th>
+                <th>Recency</th>
+                <th>Frequency</th>
+                <th class="text-end">Monetary Spend</th>
+                <th class="text-center">RFM Score</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/segmentation.js') }}"></script>
+{% endblock %}

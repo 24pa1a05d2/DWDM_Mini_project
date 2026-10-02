@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}E-Commerce DWDM Sales Intelligence System{% endblock %}</title>
+
+  <!-- Google Fonts & Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <div id="app-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon">
+          <i class="bi bi-diagram-3-fill"></i>
+        </div>
+        <div>
+          <div class="brand-title">DWDM Intelligence</div>
+          <div class="brand-subtitle">B.Tech CSE Mini-Project</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Main Analytics</div>
+        <a href="/" class="nav-link-item {% if active_page == 'dashboard' %}active{% endif %}">
+          <i class="bi bi-grid-1x2-fill"></i> Dashboard
+        </a>
+        <a href="/sales" class="nav-link-item {% if active_page == 'sales' %}active{% endif %}">
+          <i class="bi bi-graph-up-arrow"></i> Sales Analysis
+        </a>
+
+        <div class="nav-label">Data Mining & ETL</div>
+        <a href="/data" class="nav-link-item {% if active_page == 'data' %}active{% endif %}">
+          <i class="bi bi-database-add"></i> Data Management
+        </a>
+        <a href="/olap" class="nav-link-item {% if active_page == 'olap' %}active{% endif %}">
+          <i class="bi bi-bounding-box-circles"></i> OLAP Analysis
+        </a>
+        <a href="/customers" class="nav-link-item {% if active_page == 'customers' %}active{% endif %}">
+          <i class="bi bi-people-fill"></i> Customer Analysis
+        </a>
+        <a href="/segmentation" class="nav-link-item {% if active_page == 'segmentation' %}active{% endif %}">
+          <i class="bi bi-pie-chart-fill"></i> Customer Segmentation
+        </a>
+
+        <div class="nav-label">Reports & Project</div>
+        <a href="/reports" class="nav-link-item {% if active_page == 'reports' %}active{% endif %}">
+          <i class="bi bi-file-earmark-bar-graph-fill"></i> Reports & Insights
+        </a>
+        <a href="/about" class="nav-link-item {% if active_page == 'about' %}active{% endif %}">
+          <i class="bi bi-info-circle-fill"></i> About Project
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-cpu-fill text-indigo-400"></i>
+          <div>
+            <div class="fw-bold">Data Warehouse v1.0</div>
+            <div style="font-size: 0.68rem;">Star Schema DWDM</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Application Container -->
+    <div id="main-content">
+      <!-- Top Header -->
+      <header id="top-header">
+        <div class="d-flex align-items-center gap-3">
+          <button id="sidebar-toggle" class="btn btn-sm btn-outline-secondary d-lg-none">
+            <i class="bi bi-list"></i>
+          </button>
+          <div class="header-title-box">
+            <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+            <p>{% block page_subtitle %}Real-time Sales Analytics & Data Warehousing Insights{% endblock %}</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="db-status-badge">
+            <span class="status-dot"></span>
+            <span>Data Warehouse Active</span>
+          </div>
+          <a href="/data" class="btn btn-sm btn-primary d-none d-sm-inline-flex align-items-center gap-1">
+            <i class="bi bi-cloud-upload-fill"></i> Upload Dataset
+          </a>
+        </div>
+      </header>
+
+      <!-- Main Body Content -->
+      <main class="content-body">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2000;"></div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

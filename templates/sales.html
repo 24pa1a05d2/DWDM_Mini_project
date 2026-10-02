@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Sales Analysis - E-Commerce DWDM{% endblock %}
+{% block page_title %}Sales & Product Performance Analytics{% endblock %}
+{% block page_subtitle %}Data Warehouse Multi-Dimensional Aggregations & Top Seller Metrics{% endblock %}
+
+{% block content %}
+<!-- Interactive Filters -->
+<div class="filter-bar">
+  <div class="d-flex align-items-center gap-2">
+    <i class="bi bi-funnel-fill text-indigo-400"></i>
+    <span class="fw-bold fs-7">Sales Filters:</span>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-3 flex-grow-1">
+    <div>
+      <label for="sales-filter-start">Start Date</label>
+      <input type="date" id="sales-filter-start" class="form-control filter-control">
+    </div>
+    <div>
+      <label for="sales-filter-end">End Date</label>
+      <input type="date" id="sales-filter-end" class="form-control filter-control">
+    </div>
+    <div>
+      <label for="sales-filter-category">Category</label>
+      <select id="sales-filter-category" class="form-select filter-control">
+        <option value="All">All Categories</option>
+      </select>
+    </div>
+    <div>
+      <label for="sales-filter-region">Region</label>
+      <select id="sales-filter-region" class="form-select filter-control">
+        <option value="All">All Regions</option>
+      </select>
+    </div>
+    <div>
+      <label for="sales-filter-product">Product</label>
+      <select id="sales-filter-product" class="form-select filter-control" style="max-width: 200px;">
+        <option value="All">All Products</option>
+      </select>
+    </div>
+    <div class="ms-auto align-self-end">
+      <button id="btn-sales-apply" class="btn btn-sm btn-primary">
+        <i class="bi bi-check2-circle"></i> Apply Filters
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Sales KPIs -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-primary);">
+        <i class="bi bi-currency-rupee"></i>
+      </div>
+      <div class="kpi-value" id="sales-kpi-revenue">₹0.00</div>
+      <div class="kpi-label">Total Revenue</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-success);">
+        <i class="bi bi-bag-check-fill"></i>
+      </div>
+      <div class="kpi-value" id="sales-kpi-orders">0</div>
+      <div class="kpi-label">Total Orders</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-info);">
+        <i class="bi bi-boxes"></i>
+      </div>
+      <div class="kpi-value" id="sales-kpi-quantity">0</div>
+      <div class="kpi-label">Total Quantity Sold</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-warning);">
+        <i class="bi bi-calculator-fill"></i>
+      </div>
+      <div class="kpi-value" id="sales-kpi-aov">₹0.00</div>
+      <div class="kpi-label">Average Order Value</div>
+    </div>
+  </div>
+</div>
+
+<!-- Time Trend Tabs & Chart -->
+<div class="glass-card mb-4">
+  <div class="card-title-box">
+    <h3><i class="bi bi-clock-history text-indigo-400 me-2"></i> Time-Series Sales Trend Analysis</h3>
+    <ul class="nav nav-pills" id="trend-tabs" role="tablist">
+      <li class="nav-item"><button class="nav-link active py-1 px-3 fs-7" data-granularity="daily">Daily</button></li>
+      <li class="nav-item"><button class="nav-link py-1 px-3 fs-7" data-granularity="monthly">Monthly</button></li>
+      <li class="nav-item"><button class="nav-link py-1 px-3 fs-7" data-granularity="quarterly">Quarterly</button></li>
+      <li class="nav-item"><button class="nav-link py-1 px-3 fs-7" data-granularity="yearly">Yearly</button></li>
+    </ul>
+  </div>
+  <div style="height: 340px;">
+    <canvas id="chart-sales-trend"></canvas>
+  </div>
+</div>
+
+<!-- Top Products Tables -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-trophy-fill text-warning me-2"></i> Top 10 Products by Revenue</h3>
+        <span class="badge bg-warning/20 text-warning">Revenue Leaders</span>
+      </div>
+      <div class="table-responsive">
+        <table class="custom-table" id="table-top-rev-products">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th class="text-end">Units Sold</th>
+              <th class="text-end">Total Revenue</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-box2-heart-fill text-info me-2"></i> Top 10 Products by Volume</h3>
+        <span class="badge bg-cyan-500/20 text-cyan-300">Volume Leaders</span>
+      </div>
+      <div class="table-responsive">
+        <table class="custom-table" id="table-top-qty-products">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th class="text-end">Units Sold</th>
+              <th class="text-end">Total Revenue</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Best Performing Categories & Regions -->
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="glass-card">
+      <div class="card-title-box">
+        <h3><i class="bi bi-tags-fill text-success me-2"></i> Category Performance</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="custom-table" id="table-categories-perf">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th class="text-end">Total Orders</th>
+              <th class="text-end">Quantity Sold</th>
+              <th class="text-end">Total Revenue</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="glass-card">
+      <div class="card-title-box">
+        <h3><i class="bi bi-geo-fill text-danger me-2"></i> Regional Sales Performance</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="custom-table" id="table-regions-perf">
+          <thead>
+            <tr>
+              <th>Region</th>
+              <th class="text-end">Total Orders</th>
+              <th class="text-end">Quantity Sold</th>
+              <th class="text-end">Total Revenue</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/sales.js') }}"></script>
+{% endblock %}

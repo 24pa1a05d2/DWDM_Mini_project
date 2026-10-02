@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Reports & Insights - E-Commerce DWDM{% endblock %}
+{% block page_title %}Executive Business Insights & Reports{% endblock %}
+{% block page_subtitle %}Data-Driven Strategic Findings, Segment Action Plans & Exportable Summary Reports{% endblock %}
+
+{% block content %}
+<!-- Export Actions Bar -->
+<div class="d-flex align-items-center justify-content-between mb-4 print-hide">
+  <div>
+    <h4 class="fw-bold m-0"><i class="bi bi-lightbulb-fill text-warning me-2"></i> Automated Business Insights</h4>
+    <p class="text-muted small mb-0">Generated dynamically from Data Warehouse facts & machine learning cluster profiles</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn btn-sm btn-outline-light" onclick="window.print();">
+      <i class="bi bi-printer-fill me-1"></i> Print Report
+    </button>
+    <div class="dropdown">
+      <button class="btn btn-sm btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-download me-1"></i> Export Report (CSV)
+      </button>
+      <ul class="dropdown-menu dropdown-menu-dark">
+        <li><a class="dropdown-item" href="/api/reports/export/sales"><i class="bi bi-filetype-csv me-2"></i> Sales Fact Table CSV</a></li>
+        <li><a class="dropdown-item" href="/api/reports/export/rfm"><i class="bi bi-filetype-csv me-2"></i> Customer RFM Scores CSV</a></li>
+        <li><a class="dropdown-item" href="/api/reports/export/segmentation"><i class="bi bi-filetype-csv me-2"></i> Customer Clusters CSV</a></li>
+        <li><a class="dropdown-item" href="/api/reports/export/olap"><i class="bi bi-filetype-csv me-2"></i> OLAP Summary CSV</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 1: Analytical Findings -->
+<div class="row g-4 mb-4" id="findings-container">
+  <!-- Dynamic Analytical Findings Cards -->
+</div>
+
+<!-- Section 2: Strategic Business Recommendations -->
+<div class="glass-card mb-4">
+  <div class="card-title-box">
+    <h3><i class="bi bi-compass-fill text-indigo-400 me-2"></i> Strategic Business Action Recommendations</h3>
+    <span class="badge bg-indigo-500/20 text-indigo-300">Targeted Marketing</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table" id="table-recommendations">
+      <thead>
+        <tr>
+          <th>Target Segment / Area</th>
+          <th>Recommended Strategic Action</th>
+          <th class="text-center">Priority</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Section 3: Summary Reports Tables -->
+<div class="glass-card">
+  <div class="card-title-box">
+    <h3><i class="bi bi-journal-text text-emerald-400 me-2"></i> Data Warehouse Executive Summary Table</h3>
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table" id="table-summary-report">
+      <thead>
+        <tr>
+          <th>Executive Metric / Category</th>
+          <th>Calculated Value</th>
+          <th>Business Benchmark / Significance</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+{% endblock %}

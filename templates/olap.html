@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}OLAP Operations - E-Commerce DWDM{% endblock %}
+{% block page_title %}Data Warehouse OLAP Analytics Engine{% endblock %}
+{% block page_subtitle %}Interactive Roll-Up, Drill-Down, Slice, and Dice Multidimensional Cube Operations{% endblock %}
+
+{% block content %}
+<!-- OLAP Operation Tabs Header -->
+<div class="card bg-surface border-secondary mb-4">
+  <div class="card-header border-secondary bg-dark/40 p-2">
+    <ul class="nav nav-pills nav-fill" id="olap-tabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active fw-bold py-2" id="tab-btn-rollup" data-op="rollup">
+          <i class="bi bi-box-arrow-in-up me-1"></i> 1. ROLL-UP (Aggregation)
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold py-2" id="tab-btn-drilldown" data-op="drilldown">
+          <i class="bi bi-box-arrow-down-right me-1"></i> 2. DRILL-DOWN (De-aggregation)
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold py-2" id="tab-btn-slice" data-op="slice">
+          <i class="bi bi-scissors me-1"></i> 3. SLICE (1D Filter)
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold py-2" id="tab-btn-dice" data-op="dice">
+          <i class="bi bi-dice-5-fill me-1"></i> 4. DICE (Multi-Dimension Filter)
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card-body p-4">
+    <!-- Tab 1: Roll-Up Controls -->
+    <div id="olap-ctrl-rollup" class="olap-control-panel">
+      <div class="row align-items-center g-3">
+        <div class="col-md-4">
+          <label for="rollup-level" class="form-label fw-semibold">Aggregation Hierarchy Level:</label>
+          <select id="rollup-level" class="form-select filter-control">
+            <option value="daily">Daily Level (Granular Base)</option>
+            <option value="monthly" selected>Monthly Summary (Roll-Up 1)</option>
+            <option value="quarterly">Quarterly Summary (Roll-Up 2)</option>
+            <option value="yearly">Yearly Total (Roll-Up 3)</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="rollup-year" class="form-label fw-semibold">Target Year:</label>
+          <select id="rollup-year" class="form-select filter-control">
+            <option value="All">All Years</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+        </div>
+        <div class="col-md-3 align-self-end">
+          <button id="btn-run-rollup" class="btn btn-primary w-100">
+            <i class="bi bi-play-fill me-1"></i> Execute Roll-Up
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Drill-Down Controls -->
+    <div id="olap-ctrl-drilldown" class="olap-control-panel d-none">
+      <div class="row align-items-center g-3">
+        <div class="col-md-3">
+          <label for="drill-year" class="form-label fw-semibold">Target Year:</label>
+          <select id="drill-year" class="form-select filter-control">
+            <option value="2026" selected>2026</option>
+            <option value="2025">2025</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="drill-quarter" class="form-label fw-semibold">Drill into Quarter:</label>
+          <select id="drill-quarter" class="form-select filter-control">
+            <option value="">(Yearly Summary Only)</option>
+            <option value="1">Quarter 1 (Q1)</option>
+            <option value="2">Quarter 2 (Q2)</option>
+            <option value="3">Quarter 3 (Q3)</option>
+            <option value="4">Quarter 4 (Q4)</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="drill-month" class="form-label fw-semibold">Drill into Month:</label>
+          <select id="drill-month" class="form-select filter-control">
+            <option value="">(Quarterly Summary Only)</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+          </select>
+        </div>
+        <div class="col-md-3 align-self-end">
+          <button id="btn-run-drilldown" class="btn btn-primary w-100">
+            <i class="bi bi-search me-1"></i> Execute Drill-Down
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Slice Controls -->
+    <div id="olap-ctrl-slice" class="olap-control-panel d-none">
+      <div class="row align-items-center g-3">
+        <div class="col-md-4">
+          <label for="slice-dimension" class="form-label fw-semibold">Fixed Dimension:</label>
+          <select id="slice-dimension" class="form-select filter-control">
+            <option value="category" selected>Product Category</option>
+            <option value="region">Location Region</option>
+          </select>
+        </div>
+        <div class="col-md-5">
+          <label for="slice-value" class="form-label fw-semibold">Slice Dimension Value:</label>
+          <select id="slice-value" class="form-select filter-control">
+            <!-- Dynamically filled -->
+          </select>
+        </div>
+        <div class="col-md-3 align-self-end">
+          <button id="btn-run-slice" class="btn btn-primary w-100">
+            <i class="bi bi-scissors me-1"></i> Extract 2D Slice
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Dice Controls -->
+    <div id="olap-ctrl-dice" class="olap-control-panel d-none">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Filter Categories (Multi-select):</label>
+          <div id="dice-categories-box" class="p-2 border border-secondary rounded bg-dark/40" style="max-height: 110px; overflow-y: auto;"></div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Filter Regions (Multi-select):</label>
+          <div id="dice-regions-box" class="p-2 border border-secondary rounded bg-dark/40" style="max-height: 110px; overflow-y: auto;"></div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Filter Years:</label>
+          <div id="dice-years-box" class="p-2 border border-secondary rounded bg-dark/40" style="max-height: 110px; overflow-y: auto;">
+            <div class="form-check"><input class="form-check-input dice-year-check" type="checkbox" value="2025" id="dy25" checked><label class="form-check-label" for="dy25">2025</label></div>
+            <div class="form-check"><input class="form-check-input dice-year-check" type="checkbox" value="2026" id="dy26" checked><label class="form-check-label" for="dy26">2026</label></div>
+          </div>
+        </div>
+        <div class="col-12 text-end">
+          <button id="btn-run-dice" class="btn btn-primary px-4">
+            <i class="bi bi-dice-5-fill me-1"></i> Extract Sub-Cube (Dice)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DWDM Viva Explanation Banner -->
+<div class="alert alert-indigo border-indigo/30 bg-indigo-950/40 text-indigo-200 mb-4 rounded-3 p-3">
+  <div class="d-flex align-items-start gap-3">
+    <i class="bi bi-mortarboard-fill fs-3 text-indigo-400"></i>
+    <div>
+      <h6 class="fw-bold text-white mb-1" id="olap-viva-title">DWDM Viva Concept Guide</h6>
+      <p class="mb-0 small" id="olap-viva-desc">Select an OLAP operation above to view step-by-step query results and DWDM concept explanations.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SQL Executed Display -->
+<div class="glass-card mb-4">
+  <div class="card-title-box">
+    <h3><i class="bi bi-code-square text-info me-2"></i> Star Schema SQL Query Executed</h3>
+    <span class="badge bg-info/20 text-info">Data Warehouse Engine</span>
+  </div>
+  <div class="sql-box" id="olap-sql-box">SELECT * FROM FACT_SALES;</div>
+</div>
+
+<!-- Results Visualization & Table -->
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-bar-chart-fill text-emerald-400 me-2"></i> OLAP Data Cube Chart</h3>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="chart-olap-result"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-table text-indigo-400 me-2"></i> Aggregated OLAP Results</h3>
+      </div>
+      <div class="table-responsive" style="max-height: 320px;">
+        <table class="custom-table" id="table-olap-result">
+          <thead>
+            <tr id="table-olap-header">
+              <th>Dimension</th>
+              <th class="text-end">Orders</th>
+              <th class="text-end">Units Sold</th>
+              <th class="text-end">Total Revenue</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/olap.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - E-Commerce DWDM Sales Intelligence System{% endblock %}
+{% block page_title %}Executive Dashboard{% endblock %}
+{% block page_subtitle %}Data Warehouse Overview & Key Performance Indicators{% endblock %}
+
+{% block content %}
+<!-- Interactive Filters Bar -->
+<div class="filter-bar">
+  <div class="d-flex align-items-center gap-2">
+    <i class="bi bi-funnel-fill text-indigo-400"></i>
+    <span class="fw-bold fs-7">Filters:</span>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-3 flex-grow-1">
+    <div>
+      <label for="filter-start-date">Start Date</label>
+      <input type="date" id="filter-start-date" class="form-control filter-control">
+    </div>
+    <div>
+      <label for="filter-end-date">End Date</label>
+      <input type="date" id="filter-end-date" class="form-control filter-control">
+    </div>
+    <div>
+      <label for="filter-category">Product Category</label>
+      <select id="filter-category" class="form-select filter-control">
+        <option value="All">All Categories</option>
+      </select>
+    </div>
+    <div>
+      <label for="filter-region">Sales Region</label>
+      <select id="filter-region" class="form-select filter-control">
+        <option value="All">All Regions</option>
+      </select>
+    </div>
+    <div class="ms-auto align-self-end">
+      <button id="btn-apply-filters" class="btn btn-sm btn-primary">
+        <i class="bi bi-check2-circle"></i> Apply Filters
+      </button>
+      <button id="btn-reset-filters" class="btn btn-sm btn-outline-secondary ms-1">
+        <i class="bi bi-arrow-counterclockwise"></i> Reset
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- KPI Cards Row -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-primary);">
+        <i class="bi bi-currency-rupee"></i>
+      </div>
+      <div class="kpi-value" id="kpi-revenue">₹0.00</div>
+      <div class="kpi-label">Total Revenue</div>
+    </div>
+  </div>
+
+  <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-success);">
+        <i class="bi bi-cart-check-fill"></i>
+      </div>
+      <div class="kpi-value" id="kpi-orders">0</div>
+      <div class="kpi-label">Total Orders</div>
+    </div>
+  </div>
+
+  <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-purple);">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="kpi-value" id="kpi-customers">0</div>
+      <div class="kpi-label">Total Customers</div>
+    </div>
+  </div>
+
+  <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-info);">
+        <i class="bi bi-box-seam-fill"></i>
+      </div>
+      <div class="kpi-value" id="kpi-products">0</div>
+      <div class="kpi-label">Total Products</div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-md-8 col-sm-12">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-warning);">
+        <i class="bi bi-bag-plus-fill"></i>
+      </div>
+      <div class="kpi-value" id="kpi-aov">₹0.00</div>
+      <div class="kpi-label">Average Order Value (AOV)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row 1: Monthly Trend & Category Sales -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="glass-card">
+      <div class="card-title-box">
+        <h3><i class="bi bi-graph-up text-primary me-2"></i> Monthly Sales Revenue Trend</h3>
+        <span class="badge bg-indigo-500/20 text-indigo-300">Data Warehouse OLAP</span>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="chart-monthly-trend"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="glass-card">
+      <div class="card-title-box">
+        <h3><i class="bi bi-pie-chart text-success me-2"></i> Sales by Category</h3>
+        <span class="badge bg-emerald-500/20 text-emerald-300">Product Dimension</span>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="chart-category-sales"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row 2: Region Sales & Top 10 Products -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-4">
+    <div class="glass-card">
+      <div class="card-title-box">
+        <h3><i class="bi bi-geo-alt text-warning me-2"></i> Sales by Region</h3>
+        <span class="badge bg-amber-500/20 text-amber-300">Location Dimension</span>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="chart-region-sales"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="glass-card">
+      <div class="card-title-box">
+        <h3><i class="bi bi-bar-chart-steps text-info me-2"></i> Top 10 Products by Revenue</h3>
+        <span class="badge bg-cyan-500/20 text-cyan-300">Best Sellers</span>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="chart-top-products"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row 3: Customer Segment & Revenue Distribution -->
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="glass-card">
+      <div class="card-title-box">
+        <h3><i class="bi bi-diagram-3 text-purple me-2"></i> Customer Segment Distribution</h3>
+        <span class="badge bg-purple-500/20 text-purple-300">K-Means Clustering</span>
+      </div>
+      <div style="height: 300px;">
+        <canvas id="chart-segment-distribution"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="glass-card">
+      <div class="card-title-box">
+        <h3><i class="bi bi-cash-stack text-danger me-2"></i> Customer Revenue Distribution</h3>
+        <span class="badge bg-rose-500/20 text-rose-300">RFM Monetary Contribution</span>
+      </div>
+      <div style="height: 300px;">
+        <canvas id="chart-revenue-distribution"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Data Management & ETL - E-Commerce DWDM{% endblock %}
+{% block page_title %}Data Management & ETL Pipeline{% endblock %}
+{% block page_subtitle %}CSV Dataset Upload, Cleaning, Transformation & Star Schema Loading{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+  <!-- Upload Box -->
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-cloud-arrow-up-fill text-indigo-400 me-2"></i> Upload E-Commerce CSV</h3>
+        <button id="btn-run-sample" class="btn btn-sm btn-outline-info">
+          <i class="bi bi-play-circle-fill"></i> Load Sample Dataset (1.5k Records)
+        </button>
+      </div>
+
+      <form id="form-upload-csv" class="mb-3">
+        <div id="dropzone" class="border border-2 border-dashed rounded-3 p-4 text-center mb-3 style-dropzone">
+          <i class="bi bi-file-earmark-spreadsheet-fill text-indigo-400 display-4 mb-2"></i>
+          <h5 class="fw-bold">Drag & Drop CSV File Here</h5>
+          <p class="text-muted small">Supports transaction records containing Order ID, Customer ID, Product, Price, Date, Region</p>
+          <input type="file" id="input-csv-file" accept=".csv" class="d-none">
+          <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('input-csv-file').click();">
+            <i class="bi bi-folder2-open me-1"></i> Browse Files
+          </button>
+          <div id="file-name-display" class="mt-2 text-info fw-bold small"></div>
+        </div>
+
+        <button type="submit" id="btn-upload-submit" class="btn btn-primary w-100 py-2 fw-semibold" disabled>
+          <i class="bi bi-lightning-charge-fill me-1"></i> Start Preprocessing & Load Star Schema
+        </button>
+      </form>
+
+      <div class="alert alert-dark border-secondary mb-0 small">
+        <i class="bi bi-shield-check text-success me-1"></i>
+        <strong>ETL Processing Rules:</strong>
+        <ul class="mb-0 mt-1 ps-3">
+          <li>Removes exact duplicate transaction rows.</li>
+          <li>Filters out invalid numeric values (Quantity &le; 0 or Unit Price &le; 0).</li>
+          <li>Normalizes order dates to standard ISO date format (YYYY-MM-DD).</li>
+          <li>Derives total amount ($Quantity \times Unit Price$).</li>
+          <li>Generates Date, Location, Customer, and Product dimension keys.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preprocessing & ETL Execution Stats -->
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-activity text-emerald-400 me-2"></i> ETL Execution Metrics</h3>
+        <span id="etl-status-badge" class="badge bg-secondary">Awaiting File</span>
+      </div>
+
+      <div id="etl-stats-container" class="row g-3">
+        <div class="col-6 col-md-4">
+          <div class="p-3 bg-dark/40 rounded-3 border border-secondary/20">
+            <div class="text-muted small text-uppercase">Extracted Rows</div>
+            <div class="fs-4 fw-bold text-white mt-1" id="stat-extracted">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="p-3 bg-dark/40 rounded-3 border border-secondary/20">
+            <div class="text-muted small text-uppercase">Duplicates Removed</div>
+            <div class="fs-4 fw-bold text-warning mt-1" id="stat-duplicates">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="p-3 bg-dark/40 rounded-3 border border-secondary/20">
+            <div class="text-muted small text-uppercase">Invalid / Missing</div>
+            <div class="fs-4 fw-bold text-danger mt-1" id="stat-invalid">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="p-3 bg-dark/40 rounded-3 border border-secondary/20">
+            <div class="text-muted small text-uppercase">Loaded to Fact</div>
+            <div class="fs-4 fw-bold text-success mt-1" id="stat-loaded">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="p-3 bg-dark/40 rounded-3 border border-secondary/20">
+            <div class="text-muted small text-uppercase">Processing Time</div>
+            <div class="fs-4 fw-bold text-info mt-1" id="stat-time">0 ms</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="p-3 bg-dark/40 rounded-3 border border-secondary/20">
+            <div class="text-muted small text-uppercase">Target DW</div>
+            <div class="fs-4 fw-bold text-purple-400 mt-1">Star Schema</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ETL Progress Log -->
+      <div class="mt-4">
+        <div class="text-muted small mb-2 fw-semibold">ETL Pipeline Log Output</div>
+        <div class="sql-box" style="height: 140px; font-size: 0.78rem;" id="etl-log-box">
+          [System Ready] Awaiting user dataset upload or sample trigger...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Clean Data Preview Table -->
+<div class="glass-card">
+  <div class="card-title-box">
+    <h3><i class="bi bi-table text-indigo-400 me-2"></i> Clean Data Preview (Star Schema Sample)</h3>
+    <span class="badge bg-indigo-500/20 text-indigo-300">FACT_SALES & DIM Tables</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table" id="table-clean-preview">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer ID</th>
+          <th>Customer Name</th>
+          <th>Product Name</th>
+          <th>Category</th>
+          <th>Quantity</th>
+          <th>Unit Price</th>
+          <th>Total Amount</th>
+          <th>Order Date</th>
+          <th>Region</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="10" class="text-center text-muted py-4">No data loaded yet. Upload a CSV or run the sample dataset.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/data_management.js') }}"></script>
+{% endblock %}

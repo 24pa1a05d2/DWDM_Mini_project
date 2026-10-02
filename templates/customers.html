@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Analysis (RFM) - E-Commerce DWDM{% endblock %}
+{% block page_title %}Customer Behavior & RFM Analysis{% endblock %}
+{% block page_subtitle %}Recency, Frequency, Monetary Quantile Scoring & Behavioral Metrics{% endblock %}
+
+{% block content %}
+<!-- RFM Summary KPIs -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-purple);">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="kpi-value" id="rfm-kpi-total">0</div>
+      <div class="kpi-label">Analyzed Customers</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-info);">
+        <i class="bi bi-calendar2-range-fill"></i>
+      </div>
+      <div class="kpi-value" id="rfm-kpi-recency">0 Days</div>
+      <div class="kpi-label">Average Recency (R)</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-success);">
+        <i class="bi bi-arrow-repeat"></i>
+      </div>
+      <div class="kpi-value" id="rfm-kpi-frequency">0</div>
+      <div class="kpi-label">Average Order Frequency (F)</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrapper" style="background: var(--gradient-primary);">
+        <i class="bi bi-wallet2"></i>
+      </div>
+      <div class="kpi-value" id="rfm-kpi-monetary">₹0.00</div>
+      <div class="kpi-label">Average Monetary Spend (M)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Customer RFM Table -->
+<div class="glass-card">
+  <div class="card-title-box">
+    <h3><i class="bi bi-person-lines-fill text-purple me-2"></i> RFM Quantile Scoring & Customer Table</h3>
+    <div class="d-flex align-items-center gap-2">
+      <input type="text" id="rfm-search" class="form-control form-control-sm filter-control" style="width: 220px;" placeholder="Search customer ID or name...">
+      <select id="rfm-sort-by" class="form-select form-select-sm filter-control" style="width: 180px;">
+        <option value="rfm_total_score">Sort by RFM Score (High to Low)</option>
+        <option value="monetary">Sort by Monetary (M)</option>
+        <option value="frequency">Sort by Frequency (F)</option>
+        <option value="recency">Sort by Recency (Recent first)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table" id="table-rfm-customers">
+      <thead>
+        <tr>
+          <th>Customer ID</th>
+          <th>Customer Name</th>
+          <th>City / Location</th>
+          <th>Last Purchase Date</th>
+          <th class="text-end">Recency (Days)</th>
+          <th class="text-end">Frequency</th>
+          <th class="text-end">Monetary Spend</th>
+          <th class="text-center">R-F-M Quantile</th>
+          <th class="text-center">RFM Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="9" class="text-center text-muted py-4">Loading customer RFM data...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/customers.js') }}"></script>
+{% endblock %}

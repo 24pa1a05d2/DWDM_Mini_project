@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}About Project - E-Commerce DWDM Mini-Project{% endblock %}
+{% block page_title %}Project Architecture & DWDM Viva Defense Guide{% endblock %}
+{% block page_subtitle %}Comprehensive B.Tech CSE Mini-Project Documentation for Data Warehousing & Data Mining{% endblock %}
+
+{% block content %}
+<!-- Title Banner -->
+<div class="glass-card mb-4" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(30, 41, 59, 0.9) 100%);">
+  <div class="d-flex align-items-center gap-3">
+    <div class="brand-icon" style="width: 56px; height: 56px; font-size: 1.75rem;">
+      <i class="bi bi-diagram-3-fill"></i>
+    </div>
+    <div>
+      <h2 class="fw-bold mb-1 text-white">E-Commerce Customer Segmentation & Sales Intelligence System</h2>
+      <p class="text-indigo-300 mb-0 font-monospace">B.Tech CSE Mini-Project | Subject: Data Warehousing and Data Mining (DWDM)</p>
+    </div>
+  </div>
+</div>
+
+<!-- Problem Statement & Objectives -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-exclamation-octagon-fill text-danger me-2"></i> Problem Statement</h3>
+      </div>
+      <p class="text-secondary lh-relaxed">
+        Modern e-commerce enterprises generate massive volumes of transactional data daily. However, raw flat transaction tables fail to provide actionable strategic clarity regarding customer purchasing behaviors, high-value customer groups, sales trends across regions, or inactive/at-risk customers facing churn.
+      </p>
+      <p class="text-secondary lh-relaxed mb-0">
+        This project solves this challenge by transforming raw, unstructured e-commerce transactions into structured business intelligence using Data Warehousing (Star Schema DDL, ETL) and Data Mining (OLAP, RFM Analysis, K-Means Clustering).
+      </p>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-bullseye text-emerald-400 me-2"></i> Core System Objectives</h3>
+      </div>
+      <ul class="text-secondary lh-lg mb-0">
+        <li><strong>Automated ETL Pipeline:</strong> Extract CSV data, perform deduplication, data validation, date normalization, and load into a Star Schema.</li>
+        <li><strong>Multidimensional OLAP Engine:</strong> Support Roll-Up, Drill-Down, Slice, and Dice operations over time, product, and location dimensions.</li>
+        <li><strong>RFM Behavioral Scoring:</strong> Compute Recency, Frequency, and Monetary metrics with quantile scoring (1-5 scale).</li>
+        <li><strong>K-Means Clustering:</strong> Standardize RFM features using <code class="text-indigo-300">StandardScaler</code>, compute WCSS for Elbow curve analysis, and assign human-readable segment profiles.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Architecture Pipeline -->
+<div class="glass-card mb-4">
+  <div class="card-title-box">
+    <h3><i class="bi bi-diagram-2-fill text-info me-2"></i> System End-to-End Architecture Flow</h3>
+  </div>
+
+  <div class="row g-3 text-center">
+    <div class="col-md-2 col-6">
+      <div class="p-3 bg-dark/50 rounded-3 border border-secondary/30 h-100">
+        <i class="bi bi-file-earmark-spreadsheet-fill text-indigo-400 fs-3 mb-2"></i>
+        <div class="fw-bold text-white fs-7">1. CSV Dataset</div>
+        <div class="text-muted small" style="font-size: 0.72rem;">Raw E-Commerce Transactions</div>
+      </div>
+    </div>
+    <div class="col-md-2 col-6">
+      <div class="p-3 bg-dark/50 rounded-3 border border-secondary/30 h-100">
+        <i class="bi bi-funnel-fill text-emerald-400 fs-3 mb-2"></i>
+        <div class="fw-bold text-white fs-7">2. ETL Pipeline</div>
+        <div class="text-muted small" style="font-size: 0.72rem;">Clean & Transform</div>
+      </div>
+    </div>
+    <div class="col-md-2 col-6">
+      <div class="p-3 bg-dark/50 rounded-3 border border-secondary/30 h-100">
+        <i class="bi bi-database-fill-gear text-amber-400 fs-3 mb-2"></i>
+        <div class="fw-bold text-white fs-7">3. Data Warehouse</div>
+        <div class="text-muted small" style="font-size: 0.72rem;">Star Schema (Fact + Dims)</div>
+      </div>
+    </div>
+    <div class="col-md-2 col-6">
+      <div class="p-3 bg-dark/50 rounded-3 border border-secondary/30 h-100">
+        <i class="bi bi-bounding-box-circles text-cyan-400 fs-3 mb-2"></i>
+        <div class="fw-bold text-white fs-7">4. OLAP Analysis</div>
+        <div class="text-muted small" style="font-size: 0.72rem;">Roll-Up, Drill-Down, Slice, Dice</div>
+      </div>
+    </div>
+    <div class="col-md-2 col-6">
+      <div class="p-3 bg-dark/50 rounded-3 border border-secondary/30 h-100">
+        <i class="bi bi-cpu-fill text-purple fs-3 mb-2"></i>
+        <div class="fw-bold text-white fs-7">5. K-Means & RFM</div>
+        <div class="text-muted small" style="font-size: 0.72rem;">Scikit-Learn Clustering</div>
+      </div>
+    </div>
+    <div class="col-md-2 col-6">
+      <div class="p-3 bg-dark/50 rounded-3 border border-secondary/30 h-100">
+        <i class="bi bi-display-fill text-rose-400 fs-3 mb-2"></i>
+        <div class="fw-bold text-white fs-7">6. Web Dashboard</div>
+        <div class="text-muted small" style="font-size: 0.72rem;">Flask + Chart.js UI</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DWDM Concepts viva guide cards -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-star-fill text-warning me-2"></i> 1. Star Schema Data Warehouse Design</h3>
+      </div>
+      <p class="text-secondary small">
+        The Data Warehouse uses a classic <strong>Star Schema</strong> structure consisting of a central <code>FACT_SALES</code> table surrounded by 4 normalized dimension tables:
+      </p>
+      <ul class="text-secondary small ps-3">
+        <li><code>FACT_SALES</code>: Stores numeric metrics (<code class="text-emerald-400">quantity</code>, <code class="text-emerald-400">unit_price</code>, <code class="text-emerald-400">total_amount</code>) and foreign key IDs.</li>
+        <li><code>DIM_CUSTOMER</code>: Attributes (<code class="text-indigo-300">customer_id</code>, <code class="text-indigo-300">customer_name</code>, <code class="text-indigo-300">gender</code>, <code class="text-indigo-300">age</code>, <code class="text-indigo-300">location</code>).</li>
+        <li><code>DIM_PRODUCT</code>: Attributes (<code class="text-indigo-300">product_id</code>, <code class="text-indigo-300">product_name</code>, <code class="text-indigo-300">category</code>, <code class="text-indigo-300">subcategory</code>).</li>
+        <li><code>DIM_DATE</code>: Attributes (<code class="text-indigo-300">date_id</code>, <code class="text-indigo-300">full_date</code>, <code class="text-indigo-300">day</code>, <code class="text-indigo-300">month</code>, <code class="text-indigo-300">month_name</code>, <code class="text-indigo-300">quarter</code>, <code class="text-indigo-300">year</code>).</li>
+        <li><code>DIM_LOCATION</code>: Attributes (<code class="text-indigo-300">location_id</code>, <code class="text-indigo-300">city</code>, <code class="text-indigo-300">state</code>, <code class="text-indigo-300">region</code>, <code class="text-indigo-300">country</code>).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="glass-card h-100">
+      <div class="card-title-box">
+        <h3><i class="bi bi-pie-chart-fill text-purple me-2"></i> 2. K-Means Customer Segmentation</h3>
+      </div>
+      <p class="text-secondary small">
+        K-Means partitions $N$ customer samples into $K$ distinct clusters based on RFM features:
+      </p>
+      <ol class="text-secondary small ps-3">
+        <li><strong>Standardization:</strong> Features are normalized using <code>StandardScaler</code> ($\mu=0, \sigma=1$) to prevent monetary magnitude bias.</li>
+        <li><strong>Elbow Method:</strong> Calculates Within-Cluster Sum of Squares (WCSS) across $K \in [1, 10]$ to locate the inflection ("elbow") point.</li>
+        <li><strong>Centroid Profiling & Labeling:</strong> Cluster centroids are analyzed against dataset medians to assign meaningful labels (e.g. <em>High-Value Champions</em>, <em>At-Risk Customers</em>, <em>Loyal Customers</em>).</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- Technology Stack Summary -->
+<div class="glass-card">
+  <div class="card-title-box">
+    <h3><i class="bi bi-stack text-indigo-400 me-2"></i> Technology Stack Specification</h3>
+  </div>
+  <div class="row g-3 text-secondary small">
+    <div class="col-md-3">
+      <div class="fw-bold text-white mb-1">Backend Framework</div>
+      <div>Python 3.13 / Flask REST APIs</div>
+    </div>
+    <div class="col-md-3">
+      <div class="fw-bold text-white mb-1">Data Warehousing</div>
+      <div>MySQL Server / SQLite Engine</div>
+    </div>
+    <div class="col-md-3">
+      <div class="fw-bold text-white mb-1">Data Mining Libraries</div>
+      <div>Pandas, NumPy, Scikit-Learn</div>
+    </div>
+    <div class="col-md-3">
+      <div class="fw-bold text-white mb-1">Frontend UI & Visualization</div>
+      <div>HTML5, Modern CSS3, Bootstrap 5, Chart.js</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
